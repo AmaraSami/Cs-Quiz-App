@@ -1,8 +1,6 @@
 package com.example.csmaster
 
 import android.content.Intent
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,82 +11,75 @@ import com.google.firebase.firestore.FirebaseFirestore
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var internetReceiver: InternetConnectivityReceiver
-
-
-    override fun onResume() {
-        super.onResume()
-        internetReceiver = InternetConnectivityReceiver()
-        registerReceiver(
-            internetReceiver,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
-    }
-
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(internetReceiver)
-    }
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        firebaseAuth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
 
         binding.registerButton.setOnClickListener {
-            val email = binding.emailEditText.text.toString().trim()
-            val password = binding.passwordEditText.text.toString().trim()
-            val confirmPassword = binding.confirmPasswordEditText.text.toString().trim()
-            val role = if (binding.adminRadioButton.isChecked) "admin" else "user"
+            val email       = binding.emailEditText.text.toString().trim()
+            val password    = binding.passwordEditText.text.toString().trim()
+            val confirmPass = binding.confirmPasswordEditText.text.toString().trim()
+            val isAdmin     = binding.adminRadioButton.isChecked
 
-            if (email.isNotEmpty() && password.isNotEmpty() && password == confirmPassword) {
-                firebaseAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val currentUser = firebaseAuth.currentUser
-                            val uid = currentUser?.uid
+            // Basic validation
+            if (email.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (password != confirmPass) {
+                Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-                            currentUser?.sendEmailVerification()
-                                ?.addOnCompleteListener {
-                                    if (it.isSuccessful) {
-                                        Toast.makeText(this, "Verification email sent", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
+            // Create the Auth user
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
 
-                            val userData = hashMapOf(
-                                "email" to email,
-                                "role" to role
-                            )
+                    // Optionally send verification email
+                    auth.currentUser?.sendEmailVerification()
 
-                            uid?.let {
-                                firestore.collection("users").document(it)
-                                    .set(userData)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show()
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(this, "Failed to save user data: ${it.message}", Toast.LENGTH_LONG).show()
-                                    }
-                            }
-
+                    // Write Firestore document with isAdmin flag
+                    val userData = mapOf(
+                        "email"   to email,
+                        "isAdmin" to isAdmin,
+                        "approved" to !isAdmin
+                    )
+                    db.collection("users")
+                        .document(uid)
+                        .set(userData)
+                        .addOnSuccessListener {
+                            Toast.makeText(
+                                this,
+                                if (isAdmin)
+                                    "Admin registration submitted—awaiting approval."
+                                else
+                                    "Registered successfully! Please log in.",
+                                Toast.LENGTH_LONG
+                            ).show()
                             startActivity(Intent(this, LoginActivity::class.java))
                             finish()
-                        } else {
-                            Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
-                    }
-            } else {
-                Toast.makeText(this, "Fill all fields and make sure passwords match", Toast.LENGTH_SHORT).show()
-            }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(
+                        this,
+                        "Registration failed: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
         }
 
         binding.loginRedirect.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }

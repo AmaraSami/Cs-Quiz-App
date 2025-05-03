@@ -98,16 +98,35 @@ class LoginActivity : AppCompatActivity() {
     private fun fetchRoleAndRedirect(uid: String) {
         db.collection("users").document(uid).get()
             .addOnSuccessListener { doc ->
-                val isAdmin = doc.getBoolean("isAdmin") == true
-                prefs.edit().putString("role", if (isAdmin) "admin" else "user").apply()
+                val isAdmin   = doc.getBoolean("isAdmin")  == true
+                val approved  = doc.getBoolean("approved") == true
 
+                if (isAdmin && !approved) {
+                    // Block un‑approved admin
+                    FirebaseAuth.getInstance().signOut()
+                    Toast.makeText(
+                        this,
+                        "Your admin account is awaiting approval. Please try again later.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@addOnSuccessListener
+                }
+
+                // Save role as before
+                prefs.edit()
+                    .putString("role", if (isAdmin) "admin" else "user")
+                    .apply()
+
+                // And redirect
                 val dest = if (isAdmin) AdminDashboardActivity::class.java
                 else MainActivity::class.java
+
                 startActivity(Intent(this, dest))
                 finish()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Unable to get role: ${it.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error fetching role: ${it.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 }
