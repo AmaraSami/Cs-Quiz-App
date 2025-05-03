@@ -1,79 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:fillViewport="true">
+    tools:context=".EditQuizActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
+        android:id="@+id/editQuizHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:padding="4dp"
+        android:text="Edit Quiz"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Toolbar-style header -->
-        <TextView
-            android:id="@+id/editQuizHeader"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Quiz"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:paddingBottom="16dp"
-            android:textColor="@android:color/black" />
+    <EditText
+        android:id="@+id/titleEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Quiz Title"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/editQuizHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
 
-        <!-- Quiz Title -->
-        <EditText
-            android:id="@+id/quizTitleEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Quiz Title"
-            android:layout_marginBottom="12dp"
-            android:inputType="text" />
+    <EditText
+        android:id="@+id/subtitleEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Quiz Subtitle"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/titleEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp" />
 
-        <!-- Quiz Subtitle -->
-        <EditText
-            android:id="@+id/quizSubtitleEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Quiz Subtitle"
-            android:layout_marginBottom="12dp"
-            android:inputType="text" />
+    <EditText
+        android:id="@+id/timeEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Time (minutes)"
+        android:inputType="number"
+        android:padding="12dp"
+        app:layout_constraintTop_toBottomOf="@id/subtitleEditText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp" />
 
-        <!-- Quiz Time -->
-        <EditText
-            android:id="@+id/quizTimeEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Time (in minutes)"
-            android:inputType="number"
-            android:layout_marginBottom="16dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/questionRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/timeEditText"
+        app:layout_constraintBottom_toTopOf="@id/addQuestionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- Question List -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/questionRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:layout_marginBottom="16dp" />
+    <Button
+        android:id="@+id/addQuestionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:text="Add Question"
+        app:layout_constraintBottom_toTopOf="@id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/questionRecyclerView" />
 
-        <!-- Add Question Button -->
-        <Button
-            android:id="@+id/addQuestionButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Question"
-            android:layout_marginBottom="12dp"
-            android:textColor="@android:color/white" />
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Quiz"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
 
-        <!-- Save Quiz Button -->
-        <Button
-            android:id="@+id/saveQuizButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Save Quiz"
-            android:textColor="@android:color/white" />
-
-    </LinearLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

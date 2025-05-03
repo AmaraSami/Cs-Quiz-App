@@ -20,27 +20,31 @@ class EditQuizActivity : AppCompatActivity() {
         binding = ActivityEditQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Get data from intent
         quizId = intent.getStringExtra("quizId")
-        binding.quizTitleEditText.setText(intent.getStringExtra("title") ?: "")
-        binding.quizSubtitleEditText.setText(intent.getStringExtra("subtitle") ?: "")
-        binding.quizTimeEditText.setText(intent.getStringExtra("time") ?: "")
+        binding.titleEditText.setText(intent.getStringExtra("title") ?: "")
+        binding.subtitleEditText.setText(intent.getStringExtra("subtitle") ?: "")
+        binding.timeEditText.setText(intent.getStringExtra("time") ?: "")
 
+        // Setup RecyclerView
         questionList = ArrayList()
         questionAdapter = QuestionAdapter(questionList)
-
         binding.questionRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.questionRecyclerView.adapter = questionAdapter
 
+        // Load questions if editing an existing quiz
         if (quizId != null) {
             loadQuizData()
         }
 
+        // Add new empty question
         binding.addQuestionButton.setOnClickListener {
             questionList.add(QuestionModel("", listOf("", "", "", ""), ""))
             questionAdapter.notifyItemInserted(questionList.size - 1)
         }
 
-        binding.saveQuizButton.setOnClickListener {
+        // Save updated or new quiz
+        binding.saveButton.setOnClickListener {
             currentFocus?.clearFocus()
             saveQuiz()
         }
@@ -50,8 +54,8 @@ class EditQuizActivity : AppCompatActivity() {
         db.collection("quizzes").document(quizId!!).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    val questions = document["questionList"] as? List<Map<String, Any>> ?: emptyList()
                     questionList.clear()
+                    val questions = document["questionList"] as? List<Map<String, Any>> ?: emptyList()
                     for (q in questions) {
                         val question = q["question"] as? String ?: ""
                         val correct = q["correct"] as? String ?: ""
@@ -67,9 +71,9 @@ class EditQuizActivity : AppCompatActivity() {
     }
 
     private fun saveQuiz() {
-        val title = binding.quizTitleEditText.text.toString().trim()
-        val subtitle = binding.quizSubtitleEditText.text.toString().trim()
-        val time = binding.quizTimeEditText.text.toString().trim().toIntOrNull()
+        val title = binding.titleEditText.text.toString().trim()
+        val subtitle = binding.subtitleEditText.text.toString().trim()
+        val time = binding.timeEditText.text.toString().trim().toIntOrNull()
 
         if (title.isEmpty() || subtitle.isEmpty() || time == null || time <= 0) {
             Toast.makeText(this, "Please fill in all fields correctly", Toast.LENGTH_SHORT).show()

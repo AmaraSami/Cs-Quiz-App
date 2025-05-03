@@ -1,6 +1,8 @@
 package com.example.csmaster
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,22 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var internetReceiver: InternetConnectivityReceiver
+
+
+    override fun onResume() {
+        super.onResume()
+        internetReceiver = InternetConnectivityReceiver()
+        registerReceiver(
+            internetReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(internetReceiver)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,22 +51,18 @@ class RegisterActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val currentUser = firebaseAuth.currentUser
+                            val uid = currentUser?.uid
 
                             currentUser?.sendEmailVerification()
                                 ?.addOnCompleteListener {
                                     if (it.isSuccessful) {
                                         Toast.makeText(this, "Verification email sent", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(this, "Email verification failed: ${it.exception?.message}", Toast.LENGTH_LONG).show()
                                     }
                                 }
 
-                            // Save user info in Firestore
-                            val uid = currentUser?.uid
                             val userData = hashMapOf(
                                 "email" to email,
-                                "isAdmin" to (role == "admin"),
-                                "approved" to (role != "admin") // admins need manual approval
+                                "role" to role
                             )
 
                             uid?.let {
@@ -58,14 +72,14 @@ class RegisterActivity : AppCompatActivity() {
                                         Toast.makeText(this, "User registered successfully", Toast.LENGTH_SHORT).show()
                                     }
                                     .addOnFailureListener {
-                                        Toast.makeText(this, "Error saving user role: ${it.message}", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this, "Failed to save user data: ${it.message}", Toast.LENGTH_LONG).show()
                                     }
                             }
 
                             startActivity(Intent(this, LoginActivity::class.java))
                             finish()
                         } else {
-                            Toast.makeText(this, "Registration Failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_LONG).show()
                         }
                     }
             } else {

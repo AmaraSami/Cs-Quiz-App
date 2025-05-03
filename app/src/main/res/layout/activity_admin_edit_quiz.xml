@@ -2,80 +2,78 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AdminEditQuizActivity">
 
-    <!-- Title EditText -->
     <EditText
         android:id="@+id/titleEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Quiz Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="12dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/subtitleEditText"
-        android:layout_marginTop="64dp"
-        android:padding="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
 
-    <!-- Subtitle EditText -->
     <EditText
         android:id="@+id/subtitleEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Subtitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:hint="Quiz Subtitle"
+        android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/titleEditText"
-        app:layout_constraintBottom_toTopOf="@id/timeEditText"
-        android:layout_marginTop="16dp"
-        android:padding="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp" />
 
-    <!-- Time EditText -->
     <EditText
         android:id="@+id/timeEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Time (minutes)"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:inputType="number"
+        android:padding="12dp"
         app:layout_constraintTop_toBottomOf="@id/subtitleEditText"
-        app:layout_constraintBottom_toTopOf="@id/questionRecyclerView"
-        android:layout_marginTop="16dp"
-        android:padding="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp" />
 
-    <!-- RecyclerView for Questions -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/questionRecyclerView"
         android:layout_width="0dp"
-        android:layout_height="200dp"
-    app:layout_constraintTop_toBottomOf="@id/timeEditText"
-    app:layout_constraintBottom_toTopOf="@id/addQuestionButton"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:padding="16dp" />
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:scrollbars="vertical"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/timeEditText"
+        app:layout_constraintBottom_toTopOf="@id/addQuestionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Add Question Button -->
     <Button
         android:id="@+id/addQuestionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:text="Add Question"
-        app:layout_constraintTop_toBottomOf="@id/questionRecyclerView"
+        app:layout_constraintBottom_toTopOf="@id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintTop_toBottomOf="@id/questionRecyclerView" />
 
-    <!-- Save Button -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save Quiz"
-        app:layout_constraintTop_toBottomOf="@id/addQuestionButton"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

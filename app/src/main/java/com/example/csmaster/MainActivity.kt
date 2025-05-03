@@ -1,7 +1,10 @@
 package com.example.csmaster
 
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,72 +15,77 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-    private lateinit var quizModelList: MutableList<QuizModel>
-    private lateinit var adapter: QuizListAdapter
     private lateinit var auth: FirebaseAuth
-    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var prefs: SharedPreferences
+    private val db = FirebaseFirestore.getInstance()
+    private val quizModelList = mutableListOf<QuizModel>()
+
+    private lateinit var internetReceiver: InternetConnectivityReceiver
+
+    override fun onResume() {
+        super.onResume()
+        internetReceiver = InternetConnectivityReceiver()
+        registerReceiver(
+            internetReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(internetReceiver)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE)
         auth = FirebaseAuth.getInstance()
+        prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
-        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-        val isAdmin = sharedPreferences.getBoolean("isAdmin", false)
-
-        if (!isLoggedIn || auth.currentUser == null) {
+        // Must be logged in AND have a role saved
+        val role = prefs.getString("role", null)
+        if (auth.currentUser == null || role.isNullOrEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
 
-        if (isAdmin) {
+        // If somehow an admin hits this, bump them to their dashboard
+        if (role == "admin") {
             startActivity(Intent(this, AdminDashboardActivity::class.java))
             finish()
             return
         }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = QuizListAdapter(quizModelList)
 
-        quizModelList = mutableListOf()
-        getDataFromFirebase()
+        fetchQuizzes()
 
         binding.logoutButton.setOnClickListener {
             auth.signOut()
-            sharedPreferences.edit().clear().apply()
+            prefs.edit().clear().apply()
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
     }
 
-    private fun setupRecyclerView() {
-        binding.progressBar.visibility = View.GONE
-        adapter = QuizListAdapter(quizModelList)
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = adapter
-    }
-
-    private fun getDataFromFirebase() {
+    private fun fetchQuizzes() {
         binding.progressBar.visibility = View.VISIBLE
-        FirebaseFirestore.getInstance().collection("quizzes")
-            .addSnapshotListener { snapshots, error ->
+        db.collection("quizzes")
+            .addSnapshotListener { snaps, err ->
                 binding.progressBar.visibility = View.GONE
-
-                if (error != null) {
-                    Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                if (err != null) {
+                    Toast.makeText(this, "Error: ${err.message}", Toast.LENGTH_SHORT).show()
                     return@addSnapshotListener
                 }
-
                 quizModelList.clear()
-                for (doc in snapshots!!) {
-                    val model = doc.toObject(QuizModel::class.java).copy(id = doc.id)
-                    quizModelList.add(model)
+                snaps?.forEach { doc ->
+                    quizModelList.add(doc.toObject(QuizModel::class.java).copy(id = doc.id))
                 }
-                setupRecyclerView()
+                binding.recyclerView.adapter?.notifyDataSetChanged()
             }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.csmaster
 
+import android.content.IntentFilter
 import android.graphics.Color
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -12,23 +14,45 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.csmaster.databinding.ActivityQuizBinding
 import com.example.csmaster.databinding.ScoreDialogBinding
 
-class QuizActivity : AppCompatActivity(),View.OnClickListener {
+class QuizActivity : AppCompatActivity(), View.OnClickListener {
 
     companion object {
-        var questionModelList : List<QuestionModel> = listOf()
-        var time : String = ""
+        var questionModelList: List<QuestionModel> = listOf()
+        var time: String = ""
     }
 
-    lateinit var binding: ActivityQuizBinding
+    private lateinit var binding: ActivityQuizBinding
+    private var countDownTimer: CountDownTimer? = null
+    private lateinit var internetReceiver: InternetConnectivityReceiver
 
-    var currentQuestionIndex = 0;
-    var selectedAnswer = ""
-    var score = 0;
+    private var currentQuestionIndex = 0
+    private var selectedAnswer = ""
+    private var score = 0
+
+    override fun onResume() {
+        super.onResume()
+        // register for connectivity changes
+        internetReceiver = InternetConnectivityReceiver()
+        registerReceiver(
+            internetReceiver,
+            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // unregister and cancel quiz
+        unregisterReceiver(internetReceiver)
+        countDownTimer?.cancel()
+        showRestartDialog("Quiz paused. Please restart to continue.")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // set click listeners
         binding.apply {
             btn0.setOnClickListener(this@QuizActivity)
             btn1.setOnClickListener(this@QuizActivity)
@@ -41,35 +65,37 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
         startTimer()
     }
 
-    private fun startTimer(){
+    private fun startTimer() {
         val totalTimeInMillis = time.toInt() * 60 * 1000L
-        object : CountDownTimer(totalTimeInMillis,1000L){
+        countDownTimer = object : CountDownTimer(totalTimeInMillis, 1000L) {
             override fun onTick(millisUntilFinished: Long) {
-                val seconds = millisUntilFinished /1000
-                val minutes = seconds/60
+                val seconds = millisUntilFinished / 1000
+                val minutes = seconds / 60
                 val remainingSeconds = seconds % 60
-                binding.timerIndicatorTextview.text = String.format("%02d:%02d", minutes,remainingSeconds)
-
+                binding.timerIndicatorTextview.text =
+                    String.format("%02d:%02d", minutes, remainingSeconds)
             }
 
             override fun onFinish() {
-                //Finish the quiz
+                // Time’s up — cancel further ticks
+                countDownTimer = null
+                showRestartDialog("Time’s up! Please restart to try again.")
             }
-
         }.start()
     }
 
-    private fun loadQuestions(){
+    private fun loadQuestions() {
         selectedAnswer = ""
-        if(currentQuestionIndex == questionModelList.size){
+        if (currentQuestionIndex == questionModelList.size) {
             finishQuiz()
             return
         }
 
         binding.apply {
-            questionIndicatorTextview.text = "Question ${currentQuestionIndex+1}/ ${questionModelList.size} "
+            questionIndicatorTextview.text =
+                "Question ${currentQuestionIndex + 1}/${questionModelList.size}"
             questionProgressIndicator.progress =
-                ( currentQuestionIndex.toFloat() / questionModelList.size.toFloat() * 100 ).toInt()
+                ((currentQuestionIndex.toFloat() / questionModelList.size) * 100).toInt()
             questionTextview.text = questionModelList[currentQuestionIndex].question
             btn0.text = questionModelList[currentQuestionIndex].options[0]
             btn1.text = questionModelList[currentQuestionIndex].options[1]
@@ -79,43 +105,44 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-
+        // reset all buttons to gray
         binding.apply {
             btn0.setBackgroundColor(getColor(R.color.gray))
             btn1.setBackgroundColor(getColor(R.color.gray))
             btn2.setBackgroundColor(getColor(R.color.gray))
             btn3.setBackgroundColor(getColor(R.color.gray))
-
         }
 
         val clickedBtn = view as Button
-        if(clickedBtn.id==R.id.next_btn){
-            //next button is clicked
-            if(selectedAnswer.isEmpty()){
-                Toast.makeText(applicationContext,"Please select answer to continue",Toast.LENGTH_SHORT).show()
-                return;
+        if (clickedBtn.id == R.id.next_btn) {
+            // Next button
+            if (selectedAnswer.isEmpty()) {
+                Toast.makeText(applicationContext, "Please select an answer", Toast.LENGTH_SHORT)
+                    .show()
+                return
             }
-            if(selectedAnswer == questionModelList[currentQuestionIndex].correct){
+            if (selectedAnswer == questionModelList[currentQuestionIndex].correct) {
                 score++
-                Log.i("Score of quiz",score.toString())
+                Log.i("Score of quiz", score.toString())
             }
             currentQuestionIndex++
             loadQuestions()
-        }else{
-            //options button is clicked
+        } else {
+            // An option was clicked
             selectedAnswer = clickedBtn.text.toString()
             clickedBtn.setBackgroundColor(getColor(R.color.orange))
         }
     }
 
+
     private fun finishQuiz() {
         val totalQuestions = questionModelList.size
-        val percentage = ((score.toFloat() / totalQuestions.toFloat()) * 100).toInt()
+        val percentage = ((score.toFloat() / totalQuestions) * 100).toInt()
 
         val dialogBinding = ScoreDialogBinding.inflate(layoutInflater)
         dialogBinding.apply {
             scoreProgressIndicator.progress = percentage
-            scoreProgressText.text = "$percentage %"
+            scoreProgressText.text = "$percentage%"
             if (percentage > 60) {
                 scoreTitle.text = "Congrats! You have passed"
                 scoreTitle.setTextColor(Color.BLUE)
@@ -123,13 +150,10 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
                 scoreTitle.text = "Oops! You have failed"
                 scoreTitle.setTextColor(Color.RED)
             }
-            scoreSubtitle.text = "$score out of $totalQuestions are correct"
-            finishBtn.setOnClickListener {
-                finish()
-            }
+            scoreSubtitle.text = "$score out of $totalQuestions correct"
+            finishBtn.setOnClickListener { finish() }
         }
 
-        // Show dialog only if the activity is still valid
         runOnUiThread {
             if (!isFinishing && !isDestroyed) {
                 AlertDialog.Builder(this)
@@ -140,4 +164,22 @@ class QuizActivity : AppCompatActivity(),View.OnClickListener {
         }
     }
 
+    private fun showRestartDialog(message: String) {
+        runOnUiThread {
+            if (!isFinishing && !isDestroyed) {
+                AlertDialog.Builder(this)
+                    .setTitle("Quiz Ended")
+                    .setMessage(message)
+                    .setCancelable(false)
+                    .setPositiveButton("Restart") { _, _ ->
+                        // restart this activity
+                        recreate()
+                    }
+                    .setNegativeButton("Exit") { _, _ ->
+                        finish()
+                    }
+                    .show()
+            }
+        }
+    }
 }
