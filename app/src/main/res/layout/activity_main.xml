@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:src="@drawable/img"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_corner"
+        android:backgroundTint="@color/blue"
+        android:padding="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CS Master"
+            android:gravity="center"
+            android:textSize="34sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Test Your Computer Science Knowledge With This Simple Quizzes"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="All items"
+            android:textAlignment="textStart"
+            android:gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_weight="2"
+            tools:ignore="RtlCompat" />
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:backgroundTint="@color/red"/>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:id="@+id/progress_bar"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/recycler_view"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dashboardRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dashboard"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:layout_margin="8dp"/>
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/adminQuizRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:layout_marginTop="60dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addQuizFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Add Quiz"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:tint="@android:color/white"
+        app:backgroundTint="?attr/colorPrimary"
+        android:layout_gravity="bottom|end" />
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

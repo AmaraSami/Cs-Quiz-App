@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <EditText
+        android:id="@+id/questionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Question" />
+
+    <EditText
+        android:id="@+id/optionA"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option A" />
+
+    <EditText
+        android:id="@+id/optionB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option B" />
+
+    <EditText
+        android:id="@+id/optionC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option C" />
+
+    <EditText
+        android:id="@+id/optionD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Option D" />
+
+    <EditText
+        android:id="@+id/correctAnswerEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correct Option (1-4)" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Question" />
+</LinearLayout>

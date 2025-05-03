@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.csmaster.RegisterActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    <EditText
+        android:id="@+id/passwordEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
+
+    <EditText
+        android:id="@+id/confirmPasswordEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/passwordEditText" />
+
+    <RadioGroup
+        android:id="@+id/roleRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/confirmPasswordEditText"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        android:layout_marginTop="16dp">
+
+        <RadioButton
+            android:id="@+id/userRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User"
+            android:checked="true"
+            android:layout_weight="1"/>
+
+        <RadioButton
+            android:id="@+id/adminRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Admin"
+            android:layout_weight="1"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/registerButton"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/teal_200"
+        android:text="Register"
+        android:textColor="@android:color/white"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/roleRadioGroup" />
+
+    <TextView
+        android:id="@+id/loginRedirect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already have an account? Login"
+        android:textColor="?attr/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/registerButton"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+</androidx.constraintlayout.widget.ConstraintLayout>
