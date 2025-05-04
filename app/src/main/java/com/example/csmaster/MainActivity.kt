@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -70,6 +71,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
+    }
+
+    // Override back button to prevent returning to login page
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // Show a confirmation dialog instead of going back
+            Toast.makeText(this, "Use the logout button to exit", Toast.LENGTH_SHORT).show()
+            return true // Consume the back button event
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     private fun fetchQuizzes() {
