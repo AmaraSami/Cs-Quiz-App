@@ -4,32 +4,33 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
-import android.widget.Toast
+import android.util.Log
 
 class PhoneStateReceiver : BroadcastReceiver() {
 
-    interface PhoneStateListener {
-        fun onCallOrSmsReceived()
+    companion object {
+        var listener: InterruptionListener? = null
     }
 
-    companion object {
-        var listener: PhoneStateListener? = null
+    interface InterruptionListener {
+        fun onInterruptionDetected()
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             TelephonyManager.ACTION_PHONE_STATE_CHANGED -> {
-                // For incoming calls
                 val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
-                if (state == TelephonyManager.EXTRA_STATE_RINGING) {
-                    Toast.makeText(context, "Incoming call detected! Quiz will change.", Toast.LENGTH_SHORT).show()
-                    listener?.onCallOrSmsReceived()
+                if (state == TelephonyManager.EXTRA_STATE_RINGING ||
+                    state == TelephonyManager.EXTRA_STATE_OFFHOOK
+                ) {
+                    Log.d("PhoneStateReceiver", "Call interruption detected")
+                    listener?.onInterruptionDetected()
                 }
             }
+
             "android.provider.Telephony.SMS_RECEIVED" -> {
-                // For incoming SMS
-                Toast.makeText(context, "SMS received! Quiz will change.", Toast.LENGTH_SHORT).show()
-                listener?.onCallOrSmsReceived()
+                Log.d("PhoneStateReceiver", "SMS interruption detected")
+                listener?.onInterruptionDetected()
             }
         }
     }
