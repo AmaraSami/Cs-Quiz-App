@@ -1,10 +1,10 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.csmaster.databinding.QuizItemRecyclerRowBinding
+import com.example.ThinkBinary.databinding.QuizItemRecyclerRowBinding
 
 class QuizListAdapter(private val quizModelList : List<QuizModel>) :
     RecyclerView.Adapter<QuizListAdapter.MyViewHolder>() {

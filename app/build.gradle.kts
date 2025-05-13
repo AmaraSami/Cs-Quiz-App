@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.csmaster"
+    namespace = "com.example.ThinkBinary"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.csmaster"
+        applicationId = "com.example.ThinkBinary"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

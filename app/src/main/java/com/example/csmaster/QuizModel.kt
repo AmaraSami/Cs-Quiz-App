@@ -1,6 +1,5 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
-// ✅ 1. QuizModel.kt (no changes needed)
 data class QuizModel(
     val id: String = "",
     val title: String = "",

@@ -1,10 +1,10 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csmaster.databinding.ActivityAdminEditQuizBinding
+import com.example.ThinkBinary.databinding.ActivityAdminEditQuizBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminEditQuizActivity : AppCompatActivity() {
@@ -23,28 +23,22 @@ class AdminEditQuizActivity : AppCompatActivity() {
 
         db = FirebaseFirestore.getInstance()
 
-        // Get quizId from Intent
         quizId = intent.getStringExtra("quizId") ?: return
 
-        // Initialize the question list and adapter
         questionList = ArrayList()
         questionAdapter = QuestionAdapter(questionList)
 
-        // Setup RecyclerView
         binding.questionRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.questionRecyclerView.adapter = questionAdapter
 
-        // Load quiz data
         loadQuizData()
 
-        // Add new question button click listener
         binding.addQuestionButton.setOnClickListener {
-            val newQuestion = QuestionModel("", listOf("") ,"" ) // Add default values
+            val newQuestion = QuestionModel("", listOf("") ,"" )
             questionList.add(newQuestion)
             questionAdapter.notifyItemInserted(questionList.size - 1)
         }
 
-        // Save button click listener
         binding.saveButton.setOnClickListener {
             saveQuizData()
         }
@@ -58,12 +52,10 @@ class AdminEditQuizActivity : AppCompatActivity() {
                     val subtitle = document.getString("subtitle") ?: ""
                     val time = document.getLong("time") ?: 0L
 
-                    // Populate the title, subtitle, and time fields
                     binding.titleEditText.setText(title)
                     binding.subtitleEditText.setText(subtitle)
                     binding.timeEditText.setText(time.toString())
 
-                    // Load the questions
                     val questions = document.get("questions") as? List<Map<String, Any>> ?: emptyList()
 
                     questionList.clear()

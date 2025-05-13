@@ -1,10 +1,10 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.csmaster.databinding.ActivityRegisterBinding
+import com.example.ThinkBinary.databinding.ActivityRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -28,7 +28,6 @@ class RegisterActivity : AppCompatActivity() {
             val confirmPass = binding.confirmPasswordEditText.text.toString().trim()
             val isAdmin     = binding.adminRadioButton.isChecked
 
-            // Basic validation
             if (email.isEmpty() || password.isEmpty() || confirmPass.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -38,15 +37,12 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Create the Auth user
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
 
-                    // Optionally send verification email
                     auth.currentUser?.sendEmailVerification()
 
-                    // Write Firestore document with isAdmin flag
                     val userData = mapOf(
                         "email"   to email,
                         "isAdmin" to isAdmin,

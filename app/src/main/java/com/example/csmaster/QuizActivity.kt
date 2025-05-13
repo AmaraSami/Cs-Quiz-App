@@ -1,4 +1,4 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.Manifest
 import android.content.IntentFilter
@@ -16,8 +16,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.csmaster.databinding.ActivityQuizBinding
-import com.example.csmaster.databinding.ScoreDialogBinding
+import com.example.ThinkBinary.databinding.ActivityQuizBinding
+import com.example.ThinkBinary.databinding.ScoreDialogBinding
 
 class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListener, View.OnClickListener {
 
@@ -54,7 +54,6 @@ class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListene
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup click listeners
         binding.apply {
             btn0.setOnClickListener(this@QuizActivity)
             btn1.setOnClickListener(this@QuizActivity)
@@ -68,7 +67,6 @@ class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListene
             }
         }
 
-        // Ask for runtime permissions
         requestRuntimePermissions()
 
         loadQuestions()
@@ -104,7 +102,6 @@ class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListene
     override fun onResume() {
         super.onResume()
 
-        // Always update listener and re-register the phone receiver
         PhoneStateReceiver.listener = this
 
         phoneStateReceiver = PhoneStateReceiver()
@@ -311,7 +308,6 @@ class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListene
             interruptionCount++
 
             if (interruptionCount == 1) {
-                // First interruption → auto-fail question, show warning
                 autoFailCurrentQuestion("Call/SMS interruption")
                 Toast.makeText(
                     this,
@@ -319,7 +315,6 @@ class QuizActivity : AppCompatActivity(), PhoneStateReceiver.InterruptionListene
                     Toast.LENGTH_LONG
                 ).show()
             } else if (interruptionCount >= 2) {
-                // Second interruption → show exit dialog
                 AlertDialog.Builder(this)
                     .setTitle("Too Many Interruptions")
                     .setMessage("You've received multiple calls or SMS.\nPlease retry the quiz later with Do Not Disturb enabled.")

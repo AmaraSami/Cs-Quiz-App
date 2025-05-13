@@ -1,4 +1,4 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csmaster.databinding.ActivityAdminDashboardBinding
+import com.example.ThinkBinary.databinding.ActivityAdminDashboardBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -31,7 +31,6 @@ class AdminDashboardActivity : AppCompatActivity() {
         )
     }
 
-    // 3) In onPause, unregister exactly that same receiver
     override fun onPause() {
         super.onPause()
         unregisterReceiver(internetReceiver)
@@ -45,7 +44,6 @@ class AdminDashboardActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
-        // Only allow admins here
         val role = prefs.getString("role", null)
         if (auth.currentUser == null || role != "admin") {
             Toast.makeText(this, "Access denied", Toast.LENGTH_SHORT).show()

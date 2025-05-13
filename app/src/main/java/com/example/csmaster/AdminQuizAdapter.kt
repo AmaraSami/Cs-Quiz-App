@@ -1,11 +1,11 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.csmaster.databinding.QuizItemRecyclerRowBinding
+import com.example.ThinkBinary.databinding.QuizItemRecyclerRowBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AdminQuizAdapter(

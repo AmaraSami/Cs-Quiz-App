@@ -1,4 +1,4 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.content.Context
 import android.content.Intent
@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csmaster.databinding.ActivityMainBinding
+import com.example.ThinkBinary.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
-        // Must be logged in AND have a role saved
         val role = prefs.getString("role", null)
         if (auth.currentUser == null || role.isNullOrEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        // If somehow an admin hits this, bump them to their dashboard
         if (role == "admin") {
             startActivity(Intent(this, AdminDashboardActivity::class.java))
             finish()
@@ -73,12 +71,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Override back button to prevent returning to login page
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // Show a confirmation dialog instead of going back
             Toast.makeText(this, "Use the logout button to exit", Toast.LENGTH_SHORT).show()
-            return true // Consume the back button event
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }

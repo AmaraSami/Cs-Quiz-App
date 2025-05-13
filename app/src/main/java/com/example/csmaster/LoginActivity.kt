@@ -1,4 +1,4 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.csmaster.databinding.ActivityLoginBinding
+import com.example.ThinkBinary.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -42,14 +42,12 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         prefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
 
-        // ─── If they didn’t check “Remember Me” last time, clear any saved session ───
         val wasRemembered = prefs.getBoolean("rememberMe", false)
         if (!wasRemembered) {
-            auth.signOut()                            // clear Firebase’s cached user
-            prefs.edit().clear().apply()              // clear saved flags & email & role
+            auth.signOut()
+            prefs.edit().clear().apply()
         }
 
-        // ─── Auto‑login if they _did_ check “Remember Me” and Firebase still has a user ───
         val savedRemember = prefs.getBoolean("rememberMe", false)
         val savedUid      = auth.currentUser?.uid
         if (savedRemember && savedUid != null) {
@@ -57,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        // ——— Normal login flow below ———
         binding.loginButton.setOnClickListener {
             val emailInput = binding.emailEditText.text.toString().trim()
             val password   = binding.passwordEditText.text.toString().trim()
@@ -69,10 +66,8 @@ class LoginActivity : AppCompatActivity() {
             auth.signInWithEmailAndPassword(emailInput, password)
                 .addOnSuccessListener {
                     val uid = auth.currentUser!!.uid
-                    // Save "remember me" choice
                     prefs.edit().putBoolean("rememberMe", binding.rememberMeCheckBox.isChecked)
                         .apply()
-                    // Now fetch the user’s role and send them off
                     fetchRoleAndRedirect(uid)
                 }
                 .addOnFailureListener {
@@ -102,7 +97,6 @@ class LoginActivity : AppCompatActivity() {
                 val approved  = doc.getBoolean("approved") == true
 
                 if (isAdmin && !approved) {
-                    // Block un‑approved admin
                     FirebaseAuth.getInstance().signOut()
                     Toast.makeText(
                         this,
@@ -112,12 +106,10 @@ class LoginActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
 
-                // Save role as before
                 prefs.edit()
                     .putString("role", if (isAdmin) "admin" else "user")
                     .apply()
 
-                // And redirect
                 val dest = if (isAdmin) AdminDashboardActivity::class.java
                 else MainActivity::class.java
 

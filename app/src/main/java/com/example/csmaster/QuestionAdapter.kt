@@ -1,11 +1,11 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.csmaster.databinding.ItemQuestionEditableBinding
+import com.example.ThinkBinary.databinding.ItemQuestionEditableBinding
 
 class QuestionAdapter(
     private val questionList: MutableList<QuestionModel>
@@ -21,7 +21,6 @@ class QuestionAdapter(
             val question = questionList[position]
             val b = binding
 
-            // Pre-fill all fields
             b.questionEditText.setText(question.question)
             b.optionA.setText(question.options.getOrNull(0) ?: "")
             b.optionB.setText(question.options.getOrNull(1) ?: "")
@@ -50,7 +49,7 @@ class QuestionAdapter(
             })
 
             b.correctAnswerEditText.addTextChangedListener(simpleWatcher { text ->
-                question.correct = text // The correct answer is now the full text (e.g., "Paris")
+                question.correct = text
             })
 
             b.deleteButton.setOnClickListener {

@@ -1,10 +1,10 @@
-package com.example.csmaster
+package com.example.ThinkBinary
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csmaster.databinding.ActivityEditQuizBinding
+import com.example.ThinkBinary.databinding.ActivityEditQuizBinding
 import com.google.firebase.firestore.FirebaseFirestore
 
 class EditQuizActivity : AppCompatActivity() {
@@ -26,24 +26,20 @@ class EditQuizActivity : AppCompatActivity() {
         binding.subtitleEditText.setText(intent.getStringExtra("subtitle") ?: "")
         binding.timeEditText.setText(intent.getStringExtra("time") ?: "")
 
-        // Setup RecyclerView
         questionList = ArrayList()
         questionAdapter = QuestionAdapter(questionList)
         binding.questionRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.questionRecyclerView.adapter = questionAdapter
 
-        // Load questions if editing an existing quiz
         if (quizId != null) {
             loadQuizData()
         }
 
-        // Add new empty question
         binding.addQuestionButton.setOnClickListener {
             questionList.add(QuestionModel("", listOf("", "", "", ""), ""))
             questionAdapter.notifyItemInserted(questionList.size - 1)
         }
 
-        // Save updated or new quiz
         binding.saveButton.setOnClickListener {
             currentFocus?.clearFocus()
             saveQuiz()
